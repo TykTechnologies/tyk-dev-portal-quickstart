@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  tyk-portal:
+    image: tykio/portal:v1.8.3
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./db:/opt/portal/db
+      - ./theme:/opt/portal/themes
+      - ./system:/opt/portal/public/system
+    environment:
+      - PORTAL_HOSTPORT=3001
+      - PORTAL_DATABASE_DIALECT=sqlite3
+      - PORTAL_DATABASE_CONNECTIONSTRING=db/portal.db
+      - PORTAL_DATABASE_ENABLELOGS=false
+      - PORTAL_THEMING_THEME=default
+      - PORTAL_THEMING_PATH=/opt/portal/themes
+      - PORTAL_STORAGE=fs
+      - PORTAL_LICENSEKEY=${PORTAL_LICENSEKEY:?Please set PORTAL_LICENSEKEY in .env}
