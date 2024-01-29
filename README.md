@@ -3,6 +3,7 @@
 1. `cp .env.example .env`
 2. Add your license key to `.env`
 3. Run `docker-compose up`
+4. Visit `localhost:3001` to bootstrap
 
 
 ### Customization
