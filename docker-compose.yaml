@@ -2,6 +2,8 @@ version: '3.8'
 
 services:
   tyk-portal:
+    depends_on:
+      - tyk-portal-postgres
     image: tykio/portal:v1.8.3
     ports:
       - "3001:3001"
@@ -10,11 +12,28 @@ services:
       - ./theme:/opt/portal/themes
       - ./system:/opt/portal/public/system
     environment:
-      - PORTAL_HOSTPORT=3001
-      - PORTAL_DATABASE_DIALECT=sqlite3
-      - PORTAL_DATABASE_CONNECTIONSTRING=db/portal.db
-      - PORTAL_DATABASE_ENABLELOGS=false
-      - PORTAL_THEMING_THEME=default
-      - PORTAL_THEMING_PATH=/opt/portal/themes
-      - PORTAL_STORAGE=fs
       - PORTAL_LICENSEKEY=${PORTAL_LICENSEKEY:?Please set PORTAL_LICENSEKEY in .env}
+      - PORTAL_HOSTPORT=${PORTAL_HOSTPORT}
+      - PORTAL_DATABASE_DIALECT=${PORTAL_DATABASE_DIALECT}
+      - PORTAL_DATABASE_CONNECTIONSTRING=${PORTAL_DATABASE_CONNECTIONSTRING}
+      - PORTAL_THEMING_THEME=${PORTAL_THEMING_THEME}
+      - PORTAL_THEMING_PATH=${PORTAL_THEMING_PATH}
+    networks:
+      - tyk-portal
+  
+  tyk-portal-postgres:
+    image: postgres:10-alpine
+    volumes:
+      - tyk-portal-postgres-data:/var/lib/postgresql/data/pgdata
+      - ${PWD}/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - tyk-portal
+    environment:
+      - POSTGRES_PASSWORD=${PORTAL_DATABASE_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
+volumes:
+  tyk-portal-postgres-data:
+
+networks:
+  tyk-portal:
