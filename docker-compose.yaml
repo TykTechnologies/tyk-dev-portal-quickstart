@@ -25,7 +25,7 @@ services:
     image: postgres:10-alpine
     volumes:
       - tyk-portal-postgres-data:/var/lib/postgresql/data/pgdata
-      - ${PWD}/conf/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./conf/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - tyk-portal
     environment:
